@@ -1,0 +1,25 @@
+#Playbook for Installing Cinder
+
+
+    - name: Install Cinder packages
+      apt:
+        name:
+          - cinder-api
+          - cinder-scheduler
+          - cinder-volume
+        state: present
+
+    - name: Configure Cinder Packages
+      template:
+        src: cinder.conf.j2
+        dest: /etc/cinder/cinder.conf
+
+    - name: Creating the Cinder database
+      command: cinder-manage db sync
+      become_user: cinder
+
+    - name: Restarting Cinder
+      service:
+        name: cinder-volume
+        state: restarted
+
